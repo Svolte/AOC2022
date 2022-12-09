@@ -71,15 +71,17 @@ namespace AOC2022.Solutions
                 {
                     var currentPosition = headKnot.CurrentPosition;
                     headKnot.HistoricalPositions.Add(currentPosition);
-                    var newPosition = new Position { X = currentPosition.X + xMovement, Y = currentPosition.Y + yMovement };
+                    var newPosition = new Position
+                        { X = currentPosition.X + xMovement, Y = currentPosition.Y + yMovement };
                     headKnot.CurrentPosition = newPosition;
 
                     var headTailDelta = (headKnot.CurrentPosition.X - tailKnot.CurrentPosition.X,
                         headKnot.CurrentPosition.Y - tailKnot.CurrentPosition.Y);
                     var headTailDistance = Math.Abs(headKnot.CurrentPosition.X - tailKnot.CurrentPosition.X) +
                                            Math.Abs(headKnot.CurrentPosition.Y - tailKnot.CurrentPosition.Y);
-                
-                    Console.WriteLine($"Head is at {headKnot.CurrentPosition.Name}. Tail is at {tailKnot.CurrentPosition.Name}. Distance is {headTailDistance} with delta {headTailDelta.Item1}, {headTailDelta.Item2}");
+
+                    Console.WriteLine(
+                        $"Head is at {headKnot.CurrentPosition.Name}. Tail is at {tailKnot.CurrentPosition.Name}. Distance is {headTailDistance} with delta {headTailDelta.Item1}, {headTailDelta.Item2}");
                     if (headTailDistance is 1) continue;
 
                     if (!HeadAndKnotAreInTouch(headKnot, tailKnot))
@@ -107,10 +109,11 @@ namespace AOC2022.Solutions
                 }
             }
 
-            var uniqueTailPositions = tailKnot.HistoricalPositions.GroupBy(p => p.Name).Select(g => g.FirstOrDefault()).ToList();
+            var uniqueTailPositions = tailKnot.HistoricalPositions.GroupBy(p => p.Name).Select(g => g.FirstOrDefault())
+                .ToList();
             _output.WriteLine($"Done! Tail knot went to {uniqueTailPositions.Count + 1} positions.");
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -203,7 +206,8 @@ namespace AOC2022.Solutions
                 {
                     var currentPosition = headKnot.CurrentPosition;
                     headKnot.HistoricalPositions.Add(currentPosition);
-                    var newPosition = new Position { X = currentPosition.X + xMovement, Y = currentPosition.Y + yMovement };
+                    var newPosition = new Position
+                        { X = currentPosition.X + xMovement, Y = currentPosition.Y + yMovement };
                     headKnot.CurrentPosition = newPosition;
 
                     for (int j = 0; j < knots.Count; j++)
@@ -215,45 +219,41 @@ namespace AOC2022.Solutions
                             myHeadKnot.CurrentPosition.Y - tailKnot.CurrentPosition.Y);
                         var headTailDistance = Math.Abs(myHeadKnot.CurrentPosition.X - tailKnot.CurrentPosition.X) +
                                                Math.Abs(myHeadKnot.CurrentPosition.Y - tailKnot.CurrentPosition.Y);
-                
-                        if (headTailDistance is 1) continue;
-                        Console.WriteLine($"Head knot is at {headKnot.CurrentPosition.Name}. My head is at {myHeadKnot.CurrentPosition.Name}. Tail {tailKnot.Name} is at {tailKnot.CurrentPosition.Name}. Distance is {headTailDistance} with delta {headTailDelta.Item1}, {headTailDelta.Item2}");
 
+                        if (headTailDistance is 1) continue;
                         if (!HeadAndKnotAreInTouch(myHeadKnot, tailKnot))
                         {
-                            // if (tailKnot.Name == "4" && myHeadKnot.Name == "3")
-                            // {
-                            //     _output.WriteLine($"Head is at {myHeadKnot.CurrentPosition.Name}. Tail is at {tailKnot.CurrentPosition.Name}. Distance is {headTailDistance} with delta {headTailDelta.Item1}, {headTailDelta.Item2}");
-                            // }
                             var tailCurrentPosition = tailKnot.CurrentPosition;
                             tailKnot.HistoricalPositions.Add(tailCurrentPosition);
-                            var xCorrection = Math.Abs(headTailDelta.Item1) switch
+                            var xCorrection = headTailDelta.Item1 switch
                             {
-                                > 1 => 1,
+                                >= 1 => 1,
+                                <= -1 => -1,
                                 _ => 0
                             };
-                            if (direction is "R") xCorrection = -xCorrection;
-                            var yCorrection = Math.Abs(headTailDelta.Item2) switch
+                            var yCorrection = headTailDelta.Item2 switch
                             {
-                                > 1 => 1,
+                                >= 1 => 1,
+                                <= -1 => -1,
                                 _ => 0
                             };
-                            if (direction is "U") yCorrection = -yCorrection;
                             tailKnot.CurrentPosition = new Position
                             {
-                                X = tailCurrentPosition.X + headTailDelta.Item1 + xCorrection,
-                                Y = tailCurrentPosition.Y + headTailDelta.Item2 + yCorrection
+                                X = tailCurrentPosition.X + xCorrection,
+                                Y = tailCurrentPosition.Y + yCorrection
                             };
                         }
+                        Console.WriteLine($"Head knot is at {headKnot.CurrentPosition.Name}. My head is at {myHeadKnot.CurrentPosition.Name}. Tail {tailKnot.Name} is at {tailKnot.CurrentPosition.Name}. Distance is {headTailDistance} with delta {headTailDelta.Item1}, {headTailDelta.Item2}");
+
                     }
-                    Console.WriteLine("asd");
                 }
             }
 
-            var uniqueTailPositions = knots.LastOrDefault().HistoricalPositions.GroupBy(p => p.Name).Select(g => g.FirstOrDefault()).ToList();
+            var uniqueTailPositions = knots.LastOrDefault().HistoricalPositions.GroupBy(p => p.Name)
+                .Select(g => g.FirstOrDefault()).ToList();
             _output.WriteLine($"Done! Tail knot went to {uniqueTailPositions.Count + 1} positions.");
         }
-        
+
         public bool HeadAndKnotAreInTouch(Knot headKnot, Knot tailKnot)
         {
             var xDistance = Math.Abs(headKnot.CurrentPosition.X - tailKnot.CurrentPosition.X);

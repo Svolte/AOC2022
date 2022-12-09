@@ -32,7 +32,7 @@ namespace AOC2022
         /// <returns></returns>
         public static string ReadTextFile(string searchPattern)
         {
-            var file = Directory.GetFiles(@"C:\Calendar", searchPattern).FirstOrDefault();
+            var file = Directory.GetFiles(@"/Users/antonsvensson/documents", searchPattern).FirstOrDefault();
             return File.ReadAllText(file);
         }
     }
