@@ -3,5 +3,19 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Day1&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Day2&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Day3&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Day3_2&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.Tests.Test_Intersect&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day4&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day3.Run_2&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day5.Run&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day5&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day6.Run&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day6.Run_2&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day7.Run&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day7&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day8.Run&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::5B7F01D2-F1E2-4D65-87DB-DF9F52AB5FAB::net5.0::CalendarConsole.AdventSolutions.Day8&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
