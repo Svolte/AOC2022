@@ -13,7 +13,7 @@ namespace AOC2022.Solutions
     {
         private readonly ITestOutputHelper _output;
         private List<List<string>> crtPrint = new ();
-        private List<string> currentCrtLine = ();
+        private List<string> currentCrtLine = new ();
         private int cycle = 1;
 
         public Day10(ITestOutputHelper output)
@@ -38,7 +38,6 @@ namespace AOC2022.Solutions
             var file = Helpers.ReadTextFile("*-10.txt");
             var x = 1;
             var cycleHistory = new List<Cycle>();
-            var spritePosition = 0;
             foreach (var line in file.Split(Environment.NewLine))
             {
                 var noop = line.Split("noop");
@@ -60,14 +59,13 @@ namespace AOC2022.Solutions
                     cycleHistory.Add(new Cycle { CycleNumber = cycle, XValue = x });
                     currentCrtLine.Add(GetPixel(cycle, x, crtPrint.Count));
                     x += int.Parse(addx.Skip(1).FirstOrDefault());
-                    spritePosition = x;
                     AddCycle();
                 }
             }
 
             foreach (var list in crtPrint)
             {
-                Console.WriteLine(string.Join("", list.Select(l => l)));
+                _output.WriteLine(string.Join("", list.Select(l => l)));
             }
             return cycleHistory;
         }
@@ -75,7 +73,7 @@ namespace AOC2022.Solutions
         private string GetPixel(int cycle, int spritePosition, int row)
         {
             var localCycle = cycle - 1;
-            if (localCycle >= 40) localCycle = localCycle - (40 * row);
+            if (localCycle >= 40) localCycle = localCycle - 40 * row;
             
             if (spritePosition - 1 == localCycle) return "#";
             if (spritePosition == localCycle) return "#";
@@ -102,5 +100,4 @@ namespace AOC2022.Solutions
         public int XValue { get; set; }
         public int SignalStrength => CycleNumber * XValue;
     }
-
 }
