@@ -53,10 +53,5 @@ namespace AOC2022
             }
             return directory;
         }
-        
-        public static string Serialize(this object obj)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
     }
 }

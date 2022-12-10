@@ -12,8 +12,8 @@ namespace AOC2022.Solutions
     public class Day10
     {
         private readonly ITestOutputHelper _output;
-        private List<List<string>> crtPrint = new List<List<string>>();
-        private List<string> currentCrtLine = new List<string>();
+        private List<List<string>> crtPrint = new ();
+        private List<string> currentCrtLine = ();
         private int cycle = 1;
 
         public Day10(ITestOutputHelper output)
@@ -65,7 +65,6 @@ namespace AOC2022.Solutions
                 }
             }
 
-            // _output.WriteLine(crtPrint);
             foreach (var list in crtPrint)
             {
                 Console.WriteLine(string.Join("", list.Select(l => l)));
@@ -94,17 +93,6 @@ namespace AOC2022.Solutions
             }
 
             cycle++;
-        }
-        
-        [Fact]
-        public void Test()
-        {
-            _output.WriteLine((40 % 40).ToString());
-            _output.WriteLine((41 % 40).ToString());
-            _output.WriteLine((42 % 40).ToString());
-            _output.WriteLine((80 % 40).ToString());
-            _output.WriteLine((1 % 40).ToString());
-            _output.WriteLine((39 % 40).ToString());
         }
     }
 
