@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "69did42aIiF7ftzCWDh8FzAiDaCy0OXA9IlZ4Y0+grNAiUyfh1vc3kDuS9N9ixW75FrYVguYqnRqKohsEE4Ywg==",
+  "dgSpecHash": "kbL6BjG1juY7PsAsFIwosPWkomRb0cNJpHMSDaNmkUyA8ItNg3ws1VRXenlSUarPdwmjqIn3XfHGpM6T7OL6YA==",
   "success": true,
-  "projectFilePath": "/Users/antonsvensson/Documents/AdventOfCalendar2022/AOC2022/AOC2022.csproj",
+  "projectFilePath": "/Users/antonsvensson/Documents/AOC2022/AOC2022/AOC2022.csproj",
   "expectedPackageFiles": [
     "/Users/antonsvensson/.nuget/packages/microsoft.codecoverage/17.4.0/microsoft.codecoverage.17.4.0.nupkg.sha512",
     "/Users/antonsvensson/.nuget/packages/microsoft.net.test.sdk/17.4.0/microsoft.net.test.sdk.17.4.0.nupkg.sha512",

@@ -5414,11 +5414,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/antonsvensson/Documents/AdventOfCalendar2022/AOC2022/AOC2022.csproj",
+      "projectUniqueName": "/Users/antonsvensson/Documents/AOC2022/AOC2022/AOC2022.csproj",
       "projectName": "AOC2022",
-      "projectPath": "/Users/antonsvensson/Documents/AdventOfCalendar2022/AOC2022/AOC2022.csproj",
+      "projectPath": "/Users/antonsvensson/Documents/AOC2022/AOC2022/AOC2022.csproj",
       "packagesPath": "/Users/antonsvensson/.nuget/packages/",
-      "outputPath": "/Users/antonsvensson/Documents/AdventOfCalendar2022/AOC2022/obj/",
+      "outputPath": "/Users/antonsvensson/Documents/AOC2022/AOC2022/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/antonsvensson/.nuget/NuGet/NuGet.Config"
