@@ -1,2 +1,4 @@
-obj/
-bin/
+AOC2022/obj/
+AOC2022/bin/
+.idea/
+.CS_Store
