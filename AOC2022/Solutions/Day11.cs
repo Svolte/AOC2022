@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace AOC2022.Solutions
 {
     public class Day11
     {
         private readonly ITestOutputHelper _output;
+        private static int _modulus = 1;
 
         public Day11(ITestOutputHelper output)
         {
@@ -22,12 +21,17 @@ namespace AOC2022.Solutions
         public async Task Run()
         {
             var monkeys = new List<Monkey>();
-            var rounds = 1000;
+            var rounds = 10000;
             var input = Helpers.ReadTextFile("*-11.txt");
             foreach (var monkeyLines in input.Split(Environment.NewLine).Batch(7))
             {
-                var monkey = CreateMonkey(monkeyLines);
+                var monkey = CreateMonkey(monkeyLines.ToList());
                 monkeys.Add(monkey);
+            }
+
+            foreach (var monkey in monkeys)
+            {
+                _modulus *= monkey.Divisor;
             }
 
             for (int i = 0; i < rounds; i++)
@@ -37,14 +41,13 @@ namespace AOC2022.Solutions
                     if (monkey.Items.Count == 0) continue;
                     while (monkey.Items.Any())
                     {
-                        monkey.NumberOfInspections++;
-                        var itemToThrow = monkey.NextOperation;
-                        var monkeyToCatch = monkeys.FirstOrDefault(m => m.Name == itemToThrow.NextMonkey);
-                        monkeyToCatch.Items.Add(itemToThrow.WorryLevel!.Value);
+                        var (worryLevel, nextMonkey) = monkey.NextOperation();
+                        var monkeyToCatch = monkeys.FirstOrDefault(m => m.Name == nextMonkey);
+                        monkeyToCatch.Items.Add(worryLevel);
                         monkey.Items.RemoveAt(0);
+                        monkey.NumberOfInspections++;
                     }
                 }
-                if (i == 9999) Console.WriteLine("9999");
             }
 
             var monkeyBusiness = monkeys.OrderByDescending(m => m.NumberOfInspections)
@@ -52,26 +55,43 @@ namespace AOC2022.Solutions
             var firstMonkey = monkeyBusiness.FirstOrDefault();
             var secondMonkey = monkeyBusiness.Skip(1).FirstOrDefault();
             _output.WriteLine(
-                $"First monkey count: {firstMonkey.ToString()}");
-            _output.WriteLine(
-                $"Second monkey count: {secondMonkey.ToString()}");
-            _output.WriteLine(
                 $"Monkey business: {(firstMonkey * secondMonkey).ToString()}");
         }
 
-        public Monkey CreateMonkey(IEnumerable<string> monkeyLines)
+        public Monkey CreateMonkey(List<string> monkeyLines)
         {
             var monkey = new Monkey();
-            foreach (var line in monkeyLines)
+            var name = int.Parse(monkeyLines[0][7].ToString());
+            var startingItems = monkeyLines.Skip(1).FirstOrDefault().Split("Starting items: ").Skip(1).FirstOrDefault()
+                .Split(", ").Select(l => long.Parse(l)).ToList();
+            monkey.Name = name;
+            monkey.Items = startingItems;
+
+            var operationLine = monkeyLines.Skip(2).FirstOrDefault();
+            if (operationLine.Contains("* old"))
             {
-                if (line.StartsWith("Monkey")) monkey.Name = int.Parse(line.Substring(7, 1));
-                if (line.Trim().StartsWith("Starting"))
+                monkey.IsSelfMultiplier = true;
+            }
+            else
+            {
+                var multiplierSplit = operationLine.Split("* ").Skip(1).FirstOrDefault();
+                if (multiplierSplit != null)
                 {
-                    monkey.Items = line.Split("Starting items: ").Skip(1).FirstOrDefault().Split(", ")
-                        .Select(s => BigInteger.Parse(s)).ToList();
-                    // monkey.Items = longList.Select(l => (long?) l).ToList();
+                    monkey.Multiplier = int.Parse(multiplierSplit);
+                }
+
+                var additionSplit = operationLine.Split("+ ").Skip(1).FirstOrDefault();
+                if (additionSplit != null)
+                {
+                    monkey.Addition = int.Parse(additionSplit);
                 }
             }
+
+            var divisorLine = monkeyLines.Skip(3).FirstOrDefault();
+            monkey.Divisor = int.Parse(divisorLine.Split("divisible by ").Skip(1).FirstOrDefault());
+
+            monkey.FirstMonkey = int.Parse(monkeyLines[4][29].ToString());
+            monkey.SecondMonkey = int.Parse(monkeyLines[5][30].ToString());
 
             return monkey;
         }
@@ -79,96 +99,37 @@ namespace AOC2022.Solutions
         public class Monkey
         {
             public int Name { get; set; }
-            public List<BigInteger> Items { get; set; }
-            //public long? CurrentItem => Items.FirstOrDefault();
-            public BigInteger NumberOfInspections { get; set; }
+            public List<long> Items { get; set; }
+            public long NumberOfInspections { get; set; }
+            public int Divisor { get; set; }
+            public int? Addition { get; set; }
+            public int? Multiplier { get; set; }
+            public int FirstMonkey { get; set; }
+            public int SecondMonkey { get; set; }
+            public bool ShouldUseMultiplication => Multiplier != null;
+            public bool ShouldUseAddition => Addition != null;
+            public bool IsSelfMultiplier { get; set; } = false;
 
-            public (BigInteger? WorryLevel, int NextMonkey) NextOperation
+            public (long WorryLevel, int NextMonkey) NextOperation()
             {
-                get
+                var item = Items.FirstOrDefault();
+                var worryLevel = ((ShouldUseMultiplication
+                                     ? item * Multiplier!.Value
+                                     : 0) +
+                                 (ShouldUseAddition
+                                     ? item + Addition!.Value
+                                     : 0) +
+                                 (IsSelfMultiplier
+                                     ? item * item
+                                     : 0)) % _modulus;
+                if (worryLevel < 0)
                 {
-                    if (Name == 0)
-                    {
-                        var worryLevel = Items.FirstOrDefault() * 19;
-                        var nextMonkey = worryLevel % 23 == 0 ? 2 : 3;
-                        return (worryLevel, nextMonkey);
-                    }
-                    if (Name == 1)
-                    {
-                        var worryLevel = Items.FirstOrDefault() + 6;
-                        var nextMonkey = worryLevel % 19 == 0 ? 2 : 0;
-                        return (worryLevel, nextMonkey);
-                    }
-                    if (Name == 2)
-                    {
-                        var worryLevel = Items.FirstOrDefault() * Items.FirstOrDefault();
-                        var nextMonkey = worryLevel % 13 == 0 ? 1 : 3;
-                        return (worryLevel, nextMonkey);
-                    }
-                    if (Name == 3)
-                    {
-                        var worryLevel = Items.FirstOrDefault() + 3;
-                        var nextMonkey = worryLevel % 17 == 0 ? 0 : 1;
-                        return (worryLevel, nextMonkey);
-                    }
-                    // if (Name == 0)
-                    // {
-                    //     var worryLevel = Items.FirstOrDefault() * 11;
-                    //     var nextMonkey = worryLevel % 13 == 0 ? 1 : 7;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 1)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() + 1);
-                    //     var nextMonkey = worryLevel % 7 == 0 ? 3 : 6;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 2)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() * Items.FirstOrDefault());
-                    //     var nextMonkey = worryLevel % 3 == 0 ? 5 : 4;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 3)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() + 2);
-                    //     var nextMonkey = worryLevel % 19 == 0 ? 2 : 6;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 4)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() + 6);
-                    //     var nextMonkey = worryLevel % 5 == 0 ? 0 : 5;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 5)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() + 7);
-                    //     var nextMonkey = worryLevel % 2 == 0 ? 7 : 0;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 6)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() * 7);
-                    //     var nextMonkey = worryLevel % 11 == 0 ? 2 : 4;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-                    //
-                    // if (Name == 7)
-                    // {
-                    //     var worryLevel = (Items.FirstOrDefault() + 8);
-                    //     var nextMonkey = worryLevel % 17 == 0 ? 1 : 3;
-                    //     return (worryLevel, nextMonkey);
-                    // }
-
-                    throw new NotImplementedException();
+                    Console.WriteLine("wtf");
+                    var asd = worryLevel % _modulus;
+                    var asd2 = "";
                 }
+                var nextMonkey = worryLevel % _modulus % Divisor == 0 ? FirstMonkey : SecondMonkey;
+                return (worryLevel, nextMonkey);
             }
         }
     }
