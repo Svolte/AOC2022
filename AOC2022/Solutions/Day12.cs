@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,110 +17,97 @@ namespace AOC2022.Solutions
         }
 
         [Fact]
-        public async Task Run()
+        public void Part1()
+        {
+            var history = GetPathHistory();
+            var distanceToStart = history.FirstOrDefault(h => h.Value.Name == 'S').Value.Distance;
+            _output.WriteLine(distanceToStart.ToString());
+        }
+
+        [Fact]
+        public void Part2()
+        {
+            var history = GetPathHistory();
+            var shortestToA = history.Where(p => p.Value.Name == 'a').OrderBy(p => p.Value.Distance).First().Value
+                .Distance;
+            _output.WriteLine(shortestToA.ToString());
+        }
+
+        private Dictionary<Coordinate, VisitedPoint> GetPathHistory()
         {
             var input = Helpers.ReadTextFile("*-12.txt");
-            var allLocations = CreateLocationMap(input);
-            var possiblePaths = new List<List<Location>>();
-            var startElevation = 'S';
             var endElevation = 'E';
-            var locationElevations = LocationElevationDictionary(input);
-            var start = locationElevations.FirstOrDefault(l => l.Value == endElevation);
-            var currentLocation = start.Key;
-            var paths = new List<List<Location>>();
-
-            var locationsNextToStart = LocationsNextToThis(locationElevations, start.Key);
-
-            foreach (var locationNextToStart in locationsNextToStart)
+            var inputMap = LocationMap(input);
+            var start = inputMap.FirstOrDefault(l => l.Value == endElevation);
+            var pathHistory = new Dictionary<Coordinate, VisitedPoint>
             {
-                var locationsNextToThis = LocationsNextToThis(locationElevations, locationNextToStart);
-                foreach (var location in locationsNextToThis)
                 {
-                    if (currentLocation.Name - 1 >= location.Name)
-                    {
-                        Console.WriteLine($"Found lower point: {location.Name}");
-                    }
+                    start.Key,
+                    new VisitedPoint(endElevation, 0)
+                }
+            };
+
+            var queue = new Queue<Coordinate>();
+            queue.Enqueue(start.Key);
+
+            while (queue.Any())
+            {
+                var current = queue.Dequeue();
+                var currentPoint = pathHistory[current];
+                var reachableNeighbors = ReachableNeighbors(current);
+
+                foreach (var neighbor in reachableNeighbors)
+                {
+                    if (pathHistory.ContainsKey(neighbor)) continue;
+                    if (!inputMap.ContainsKey(neighbor)) continue;
+
+                    var thisElevation = GetElevation(inputMap[current]);
+                    var nextElevation = GetElevation(inputMap[neighbor]);
+                    if (thisElevation - nextElevation > 1) continue;
+
+                    pathHistory[neighbor] = new VisitedPoint(inputMap[neighbor], currentPoint.Distance + 1);
+                    queue.Enqueue(neighbor);
                 }
             }
 
-            // while (currentLocation.Name != startElevation)
-            // {
-            //     var neighbors = LocationsNextToThis(currentLocation);
-            //     foreach (var neighbor in neighbors)
-            //     {
-            //         var path = new List<Location>();
-            //         path.Add(currentLocation);
-            //         path.Add(neighbor);
-            //         paths.Add(path);
-            //     }
-            // }
+            return pathHistory;
         }
 
-        public List<Location> LocationsNextToThis(ImmutableDictionary<Location, char> locations, Location location)
+        char GetElevation(char s)
         {
-            var locationsNextToThis = locations.Where(v =>
-                v.Key.X >= location.X - 1 && v.Key.X <= location.X + 1 &&
-                v.Key.Y >= location.Y - 1 &&
-                v.Key.Y <= location.Y + 1 && v.Key != location).Select(c => c.Key).ToList();
-            return locationsNextToThis;
+            return s switch
+            {
+                'S' => 'a',
+                'E' => 'z',
+                _ => s
+            };
         }
 
-        public ImmutableDictionary<Location, char> LocationElevationDictionary(string input)
+        List<Coordinate> ReachableNeighbors(Coordinate coordinate)
+        {
+            return new List<Coordinate>
+            {
+                coordinate with { X = coordinate.X + 1 },
+                coordinate with { X = coordinate.X - 1 },
+                coordinate with { Y = coordinate.Y + 1 },
+                coordinate with { Y = coordinate.Y - 1 }
+            };
+        }
+
+        ImmutableDictionary<Coordinate, char> LocationMap(string input)
         {
             var lines = input.Split(Environment.NewLine);
-            var asd =
+            var kvp =
                 from y in Enumerable.Range(0, lines.Length)
-                from x in Enumerable.Range(0, lines[0].Length - 1)
-                select new KeyValuePair<Location, char>(
-                    new Location(x, y), lines[y][x]
+                from x in Enumerable.Range(0, lines[0].Length)
+                select new KeyValuePair<Coordinate, char>(
+                    new Coordinate(x, y), lines[y][x]
                 );
-            return asd.ToImmutableDictionary();
+            return kvp.ToImmutableDictionary();
         }
-
-        public string[,] CreateLocationMap(string input)
-        {
-            var lines = input.Split("\r\n").Select(c => c.ToCharArray()).ToList();
-            var allLocations = new string[lines.Count, lines[0].Length];
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                for (int j = 0; j < lines[i].Length; j++)
-                {
-                    var value = lines[i][j].ToString();
-                    allLocations[i, j] = value;
-                }
-            }
-
-            return allLocations;
-        }
-
-        public List<Location> PossibleStepsFromHere(List<Location> locations, Location location)
-        {
-            return new List<Location>();
-        }
-
-        // public List<Location> LocationsNextToThis(Location location)
-        // {
-        //     return new List<Location>
-        //     {
-        //         new Location(location.X + 1, location.Y),
-        //         new Location(location.X - 1, location.Y),
-        //         new Location(location.X, location.Y + 1),
-        //         new Location(location.X, location.Y - 1),
-        //     };
-        // }
     }
 
-    public class Location
-    {
-        public Location(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
+    public record Coordinate(int X, int Y);
 
-        public char Name { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-    }
+    public record VisitedPoint(char Name, int Distance);
 }
