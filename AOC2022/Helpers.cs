@@ -34,7 +34,7 @@ namespace AOC2022
         public static string ReadTextFile(string searchPattern)
         {
             var directory = TryGetSolutionDirectoryInfo();
-            var file = Directory.GetFiles(@"C:/Calendar/", searchPattern).FirstOrDefault();
+            var file = Directory.GetFiles(@"/Users/antonsvensson/documents", searchPattern).FirstOrDefault();
             return File.ReadAllText(file);
         }
         
