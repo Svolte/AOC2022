@@ -108,26 +108,20 @@ namespace AOC2022.Solutions
             public int SecondMonkey { get; set; }
             public bool ShouldUseMultiplication => Multiplier != null;
             public bool ShouldUseAddition => Addition != null;
-            public bool IsSelfMultiplier { get; set; } = false;
+            public bool IsSelfMultiplier { get; set; }
 
             public (long WorryLevel, int NextMonkey) NextOperation()
             {
                 var item = Items.FirstOrDefault();
                 var worryLevel = ((ShouldUseMultiplication
-                                     ? item * Multiplier!.Value
-                                     : 0) +
-                                 (ShouldUseAddition
-                                     ? item + Addition!.Value
-                                     : 0) +
-                                 (IsSelfMultiplier
-                                     ? item * item
-                                     : 0)) % _modulus;
-                if (worryLevel < 0)
-                {
-                    Console.WriteLine("wtf");
-                    var asd = worryLevel % _modulus;
-                    var asd2 = "";
-                }
+                                      ? item * Multiplier!.Value
+                                      : 0) +
+                                  (ShouldUseAddition
+                                      ? item + Addition!.Value
+                                      : 0) +
+                                  (IsSelfMultiplier
+                                      ? item * item
+                                      : 0)) % _modulus;
                 var nextMonkey = worryLevel % _modulus % Divisor == 0 ? FirstMonkey : SecondMonkey;
                 return (worryLevel, nextMonkey);
             }
